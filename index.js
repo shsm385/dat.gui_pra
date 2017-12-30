@@ -26,11 +26,43 @@ function init() {
 
   // キューブ
   var geometry = new THREE.BoxGeometry(12,12,12);
-  var material = new THREE.MeshPhongMaterial({color: '#c2dc94'});
+  var c = '#c2dc94';
+  var material = new THREE.MeshPhongMaterial({color: c});
   var cube = new THREE.Mesh( geometry, material);
   cube.position.set(0,0,0);
   scene.add(cube);
 
+  // GUIパラメータ
+  var guiCtrl = function(){
+    this.Camera_x = 0;
+    this.Camera_y = 0;
+    this.Camera_z = 100;
+    this.Message = '';
+    this.color = "#c2dc94";
+    this.alert = function(){
+      alert("サンプル");
+    };
+  };
+
+  gui = new dat.GUI();
+  guiObj = new guiCtrl();
+  var folder = gui.addFolder('Folder');
+  folder.add( guiObj, 'Camera_x', 0, 100 ).onChange(setCameraPosition);
+  folder.add( guiObj, 'Camera_y', 0, 100 ).onChange(setCameraPosition);
+  folder.add( guiObj, 'Camera_z', 0, 100 ).onChange(setCameraPosition);
+  folder.addColor( guiObj , 'color' ).onChange(setColor);
+  folder.add( guiObj, 'alert' );
+  folder.open();
+
+  function setCameraPosition(){
+    camera.position.set(guiObj.Camera_x, guiObj.Camera_y, guiObj.Camera_z);
+  }
+
+  function setColor(){
+    material = new THREE.MeshPhongMaterial({color: guiObj.color});
+    var cube = new THREE.Mesh( geometry, material);
+    scene.add(cube);
+  }
   // レンダリング
   function render(){
     requestAnimationFrame(render);
